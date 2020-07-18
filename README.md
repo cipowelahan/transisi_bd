@@ -46,6 +46,10 @@ php artisan migrate --seed
 ```
 >`--seed` seeder laravel for seed database
 
+## default user
+email `admin@transisi.id`
+password `transisi`
+
 ## Storage Link
 make link storage to public
 ```
