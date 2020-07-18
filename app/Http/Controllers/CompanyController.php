@@ -12,12 +12,10 @@ class CompanyController extends Controller {
 
     public function index(Request $request) {
         $companies = Company::when($request->filled('search'), function($q) use ($request) {
-            $q->orWherehas('company', function($c) use ($request) {
-                $c->where('nama', 'like', "%$request->search%");
-            })
-            ->orWhere('id', 'like', "%$request->search%")
+            $q->orWhere('id', 'like', "%$request->search%")
             ->orWhere('nama', 'like', "%$request->search%")
-            ->orWhere('email', 'like', "%$request->search%");
+            ->orWhere('email', 'like', "%$request->search%")
+            ->orWhere('website', 'like', "%$request->search%");
         })
         ->paginate(5);
         return view('company.index', ['companies' => $companies]);

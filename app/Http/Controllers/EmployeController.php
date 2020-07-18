@@ -12,10 +12,12 @@ class EmployeController extends Controller {
 
     public function index(Request $request) {
         $employees = Employe::when($request->filled('search'), function($q) use ($request) {
-            $q->orWhere('id', 'like', "%$request->search%")
+            $q->orWherehas('company', function($c) use ($request) {
+                $c->where('nama', 'like', "%$request->search%");
+            })
+            ->orWhere('id', 'like', "%$request->search%")
             ->orWhere('nama', 'like', "%$request->search%")
-            ->orWhere('email', 'like', "%$request->search%")
-            ->orWhere('website', 'like', "%$request->search%");
+            ->orWhere('email', 'like', "%$request->search%");
         })
         ->paginate(5);
         return view('employe.index', ['employees' => $employees]);
