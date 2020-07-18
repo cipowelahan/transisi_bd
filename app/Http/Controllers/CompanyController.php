@@ -10,8 +10,16 @@ use Storage;
 
 class CompanyController extends Controller {
 
-    public function index() {
-        $companies = Company::paginate(5);
+    public function index(Request $request) {
+        $companies = Company::when($request->filled('search'), function($q) use ($request) {
+            $q->orWherehas('company', function($c) use ($request) {
+                $c->where('nama', 'like', "%$request->search%");
+            })
+            ->orWhere('id', 'like', "%$request->search%")
+            ->orWhere('nama', 'like', "%$request->search%")
+            ->orWhere('email', 'like', "%$request->search%");
+        })
+        ->paginate(5);
         return view('company.index', ['companies' => $companies]);
     }
 
@@ -28,7 +36,7 @@ class CompanyController extends Controller {
     }
 
     public function show($id) {
-        $company = Company::find($id);
+        $company = Company::with('employees')->find($id);
         return view('company.show', ['company' => $company]);
     }
 
@@ -51,6 +59,7 @@ class CompanyController extends Controller {
         if ($request->hasFile('logo')) {
             $pathLogo = Storage::disk('public')->putFileAs('company', $request->file('logo'), time().'.png');
             $update['logo'] = $pathLogo;
+            Storage::disk('public')->delete($company->logo);
         }
         $company->update($update);
 
@@ -59,7 +68,9 @@ class CompanyController extends Controller {
 
     public function destroy($id) {
         $company = Company::find($id);
+        $logo = $company->logo;
         $company->delete();
+        Storage::disk('public')->delete($logo);
         return redirect()->route('companies.index');
     }
 }

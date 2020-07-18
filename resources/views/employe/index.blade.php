@@ -5,6 +5,11 @@
     <button class="btn btn-success">Tambah Data</button>
 </a>
 
+<form class="form-inline float-right" method="GET" action="{{route('employees.index')}}">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+</form>
+
 <hr>
 
 <table class="table table-bordered">
@@ -42,6 +47,6 @@
     </tbody>
 </table>
 <div class="float-right">
-    {{ $employees->links() }}
+    {{ $employees->appends(['search' => request()->get('search')])->links() }}
 </div>
 @endsection
