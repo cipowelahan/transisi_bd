@@ -11,6 +11,13 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::group(['middleware' => 'guest'], function () {
+    Route::get('/', 'AuthController@index')->name('login.get');
+    Route::post('/', 'AuthController@login')->name('login.post');
+});
+
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/logout', 'AuthController@logout')->name('logout');
+    Route::resource('companies', 'CompanyController');
+    Route::resource('employees', 'EmployeController');
 });

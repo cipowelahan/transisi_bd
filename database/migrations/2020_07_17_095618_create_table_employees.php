@@ -17,7 +17,7 @@ class CreateTableEmployees extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('company_id');
             $table->string('nama');
-            $table->string('email');
+            $table->string('email')->unique();
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->onUpdate('cascade')->onDelete('cascade');
